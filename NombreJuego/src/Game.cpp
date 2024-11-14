@@ -8,8 +8,10 @@
 #include "Song.h"
 #include "ResourceManager.h"
 #include "CameraShake.h"
+#include "Windows.h"
+#include "GL/glu.h"
 
-Game::Game() : window(sf::VideoMode(800, 600), "Juego Ritmico", sf::Style::Default)
+Game::Game() : window(sf::VideoMode(1280, 720), "Futuristic Hero", sf::Style::Default)
 {
     this->window.setFramerateLimit(60);
     this->playMenu = nullptr;
@@ -17,6 +19,14 @@ Game::Game() : window(sf::VideoMode(800, 600), "Juego Ritmico", sf::Style::Defau
     this->mainMenu = nullptr;
     this->gameScreen = nullptr;
     this->currentScreen = nullptr;
+
+    // Carga el ícono
+    sf::Image icon;
+    if (!icon.loadFromFile("res/textures/icon.png")) {
+        std::cerr << "No se pudo cargar el archivo del ícono." << std::endl;
+    }
+    // Establece el ícono de la ventana
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     this->resourcerManager = new ResourceManager(this);
     this->resourcerManager->LoadFont();
@@ -201,10 +211,14 @@ void Game::ChangeScreen()
 
         if (this->gameScreen != nullptr)
         {
+            if (this->gameScreen->GetCaptureMode())
+            {
+                this->gameScreen->SaveCaptureMode();
+            }
             delete this->gameScreen;
             this->gameScreen = nullptr;
         }
-        this->gameScreen = new GameScreen(this);
+        this->gameScreen = new GameScreen(this, this->volumeFx);
         this->currentScreen = this->gameScreen;
         break;
     case TypeScreen::Exit:

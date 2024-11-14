@@ -29,7 +29,7 @@ public:
 	ResourceManager* GetResourceManager();
 
 	GameScreen* GetGameScreen();
-
+	int volumeFx = 100;
 private:
 	void Input();
 	void Update(float deltaTime);

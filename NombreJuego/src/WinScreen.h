@@ -22,5 +22,6 @@ private:
 	sf::Text* scoreText;
 	int sizeX;
 	int sizeY;
+	sf::Sprite* subBackground;
 };
 

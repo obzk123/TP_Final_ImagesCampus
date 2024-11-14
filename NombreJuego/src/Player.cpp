@@ -4,6 +4,7 @@
 #include "ResourceManager.h"
 #include "CameraShake.h"
 #include "GameScreen.h"
+#include "CaptureNote.h"
 
 Player::Player(std::vector<sf::Sprite*>& buttons, Game* game) : buttonsRef(buttons)
 {
@@ -22,33 +23,40 @@ Player::Player(std::vector<sf::Sprite*>& buttons, Game* game) : buttonsRef(butto
 
 	this->font = this->gameInstance->GetResourceManager()->GetFont();
 
+	int x = this->gameInstance->GetRenderWindow().getSize().x;
+	int y = this->gameInstance->GetRenderWindow().getSize().y;
+	sf::FloatRect textRect;
+
 	this->strikeText = new sf::Text();
 	this->strikeText->setFont(*this->font);
 	this->strikeText->setFillColor(sf::Color::White);
 	this->strikeText->setString("Strike: 0");
-	this->strikeText->setOrigin(50, 50);
-	this->strikeText->setPosition(137,493);
+	textRect = this->strikeText->getGlobalBounds();
+	this->strikeText->setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+	this->strikeText->setPosition(x * 0.20f, y * 0.50f);
 
 	this->scoreText = new sf::Text();
 	this->scoreText->setFont(*this->font);
 	this->scoreText->setFillColor(sf::Color::White);
 	this->scoreText->setString("Score: 0");
-	this->scoreText->setOrigin(50, 50);
-	this->scoreText->setPosition(137, 330);
+	textRect = this->scoreText->getGlobalBounds();
+	this->scoreText->setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+	this->scoreText->setPosition(x * 0.20f, y * 0.55f);
 	
 	this->arrowSprite = new sf::Sprite();
 	this->arrowSprite->setTexture(*this->gameInstance->GetResourceManager()->GetTextureArrow());
-	this->arrowSprite->setPosition(138, 401);
 	this->arrowSprite->setScale(0.85f, 0.70f);
 	this->arrowSprite->setOrigin(this->gameInstance->GetResourceManager()->GetTextureArrow()->getSize().x / 2.0f, this->gameInstance->GetResourceManager()->GetTextureArrow()->getSize().y);
 	this->arrowSprite->setRotation(0.0f);
+	this->arrowSprite->setPosition(x * 0.20f, y * 0.73f);
 
 	this->timerPoints = new sf::Text();
 	this->timerPoints->setFont(*this->font);
 	this->timerPoints->setFillColor(sf::Color::White);
 	this->timerPoints->setString("Time: " + std::to_string(this->timerDoblePoints));
-	this->timerPoints->setOrigin(50, 50);
-	this->timerPoints->setPosition(138, 280);
+	textRect = this->timerPoints->getGlobalBounds();
+	this->timerPoints->setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+	this->timerPoints->setPosition(x * 0.24f, y * 0.45f);
 }
 
 Player::~Player()
@@ -110,7 +118,7 @@ void Player::Input(sf::Event event)
 		{
 			this->buttonsRef[INDEX_GREEN_BUTTON]->setTexture(*this->gameInstance->GetResourceManager()->GetTextureButtonPressGreen());
 			check = this->CheckNote(*this->buttonsRef[INDEX_GREEN_BUTTON]);
-			if (check != -1)
+			if (check != -1 || this->gameInstance->GetGameScreen()->GetCaptureMode())
 			{
 				HitNote(INDEX_GREEN_BUTTON);
 			}
@@ -123,7 +131,7 @@ void Player::Input(sf::Event event)
 		{
 			this->buttonsRef[INDEX_RED_BUTTON]->setTexture(*this->gameInstance->GetResourceManager()->GetTextureButtonPressRed());
 			check = this->CheckNote(*this->buttonsRef[INDEX_RED_BUTTON]);
-			if (check != -1)
+			if (check != -1 || this->gameInstance->GetGameScreen()->GetCaptureMode())
 			{
 				HitNote(INDEX_RED_BUTTON);
 			}
@@ -136,7 +144,7 @@ void Player::Input(sf::Event event)
 		{
 			this->buttonsRef[INDEX_YELLOW_BUTTON]->setTexture(*this->gameInstance->GetResourceManager()->GetTextureButtonPressYellow());
 			check = this->CheckNote(*this->buttonsRef[INDEX_YELLOW_BUTTON]);
-			if (check != -1)
+			if (check != -1 || this->gameInstance->GetGameScreen()->GetCaptureMode())
 			{
 				HitNote(INDEX_YELLOW_BUTTON);
 			}
@@ -149,7 +157,7 @@ void Player::Input(sf::Event event)
 		{
 			this->buttonsRef[INDEX_BLUE_BUTTON]->setTexture(*this->gameInstance->GetResourceManager()->GetTextureButtonPressBlue());
 			check = this->CheckNote(*this->buttonsRef[INDEX_BLUE_BUTTON]);
-			if (check != -1)
+			if (check != -1 || this->gameInstance->GetGameScreen()->GetCaptureMode())
 			{
 				HitNote(INDEX_BLUE_BUTTON);
 			}
@@ -162,7 +170,7 @@ void Player::Input(sf::Event event)
 		{
 			this->buttonsRef[INDEX_ORANGE_BUTTON]->setTexture(*this->gameInstance->GetResourceManager()->GetTextureButtonPressOrange());
 			check = this->CheckNote(*this->buttonsRef[INDEX_ORANGE_BUTTON]);
-			if (check != -1)
+			if (check != -1 || this->gameInstance->GetGameScreen()->GetCaptureMode())
 			{
 				HitNote(INDEX_ORANGE_BUTTON);
 			}
@@ -234,69 +242,82 @@ void Player::AddScore(int value)
 
 void Player::HitNote(int indexButton)
 {
-	int powerUp = this->gameInstance->GetGameScreen()->notes[check]->GetPowerUp();
-	if (powerUp == 1)
+	if (!this->gameInstance->GetGameScreen()->GetCaptureMode())
 	{
-		this->timerDoblePoints =+ 5.0f;
-		if (!this->doblePointsThread.joinable())
+		int powerUp = this->gameInstance->GetGameScreen()->notes[check]->GetPowerUp();
+		if (powerUp == 1)
 		{
-			this->deadThreadDoblePoints = false;
-			this->doblePointsThread = std::thread(&Player::ThreadDoblePoints, this);
-			this->doblePointsThread.detach();
+			this->timerDoblePoints = +5.0f;
+			if (!this->doblePointsThread.joinable())
+			{
+				this->deadThreadDoblePoints = false;
+				this->doblePointsThread = std::thread(&Player::ThreadDoblePoints, this);
+				this->doblePointsThread.detach();
+			}
+			this->doblePoints = true;
 		}
-		this->doblePoints = true;
-	}
 
-	this->gameInstance->GetGameScreen()->notes[check]->SetCanBeDestroy(true);
-	//this->buttonsRef[indexButton]->setColor(sf::Color::Yellow);
-	this->strikeNotes++;
-	if (this->doblePoints)
-	{
-		this->AddScore(POINTS_PER_NOTE * 2);
+		this->gameInstance->GetGameScreen()->notes[check]->SetCanBeDestroy(true);
+		//this->buttonsRef[indexButton]->setColor(sf::Color::Yellow);
+		this->strikeNotes++;
+		if (this->doblePoints)
+		{
+			this->AddScore(POINTS_PER_NOTE * 2);
+		}
+		else
+		{
+			this->AddScore(POINTS_PER_NOTE);
+		}
+
+		if (powerUp == 2)
+		{
+			this->ResetPublicScore();
+		}
+		else
+		{
+			this->SetPublicScore(POINT_PUBLIC);
+		}
+
+		this->hitNotes++;
 	}
 	else
 	{
-		this->AddScore(POINTS_PER_NOTE);
+		this->gameInstance->GetGameScreen()->capturesNotes.push_back(new CaptureNote(indexButton, this->gameInstance->GetGameScreen()->GetTime() - 3.1f, this->gameInstance->GetGameScreen()->GetTime() - 3.0f, 0));
 	}
-
-	if (powerUp == 2)
-	{
-		this->ResetPublicScore();
-	}
-	else
-	{
-		this->SetPublicScore(POINT_PUBLIC);
-	}
-
-	this->hitNotes++;
 	
 }
 
 void Player::MissNote(int indexButton)
 {
-	if (this->strikeNotes > SHAKE_STRAKE)
+	if (!this->gameInstance->GetGameScreen()->GetCaptureMode())
 	{
-		this->gameInstance->GetGameScreen()->GetCameraShake()->startShake(0.5f, 10.0f);
-	}
-	this->gameInstance->GetGameScreen()->GetBadSoundVector()[indexButton]->stop();
-	this->gameInstance->GetGameScreen()->GetBadSoundVector()[indexButton]->play();
+		if (this->strikeNotes > SHAKE_STRAKE)
+		{
+			this->gameInstance->GetGameScreen()->GetCameraShake()->startShake(0.5f, 10.0f);
+		}
+		this->gameInstance->GetGameScreen()->GetBadSoundVector()[indexButton]->stop();
+		this->gameInstance->GetGameScreen()->GetBadSoundVector()[indexButton]->play();
 
-	this->missNotes++;
-	this->strikeNotes = 0;
-	this->SetPublicScore(-POINT_PUBLIC);
-	this->gameInstance->GetGameScreen()->CheckLoss();
+		this->missNotes++;
+		this->strikeNotes = 0;
+		this->SetPublicScore(-POINT_PUBLIC - 2);
+		this->gameInstance->GetGameScreen()->CheckLoss();
+	}
 }
 
 void Player::FailNote()
 {
-	if (this->strikeNotes > SHAKE_STRAKE)
+	if (!this->gameInstance->GetGameScreen()->GetCaptureMode())
 	{
-		this->gameInstance->GetGameScreen()->GetCameraShake()->startShake(0.5f, 10.0f);
+		if (this->strikeNotes > SHAKE_STRAKE)
+		{
+			this->gameInstance->GetGameScreen()->GetCameraShake()->startShake(0.5f, 10.0f);
+		}
+		this->failNotes++;
+		this->strikeNotes = 0;
+		this->SetPublicScore(-POINT_PUBLIC - 2);
+		this->gameInstance->GetGameScreen()->CheckLoss();
 	}
-	this->failNotes++;
-	this->strikeNotes = 0;
-	this->SetPublicScore(-POINT_PUBLIC);
-	this->gameInstance->GetGameScreen()->CheckLoss();
 }
 
 void Player::ThreadDoblePoints()

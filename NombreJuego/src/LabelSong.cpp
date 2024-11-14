@@ -2,7 +2,7 @@
 
 LabelSong::LabelSong()
 {
-	this->labelBackground = new sf::RectangleShape();
+	this->labelBackground = new sf::Sprite();
 	this->title = new sf::Text();
 	this->subtitle = new sf::Text();
 	this->duracion = new sf::Text();

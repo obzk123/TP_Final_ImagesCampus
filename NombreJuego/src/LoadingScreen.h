@@ -15,7 +15,8 @@ private:
 	
 	float loadTime;
 	int dotCount;
-	sf::CircleShape* mySpinner;
+	sf::RectangleShape* background;
+	sf::Sprite* mySpinner;
 	sf::Text* myText;
 	void ModifyText(float deltaTime);
 

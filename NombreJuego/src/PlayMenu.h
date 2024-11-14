@@ -22,5 +22,7 @@ private:
 	int backNumber = 0;
 	void PlaySound();
 	std::vector<class LabelSong*> labelSongs;
+	sf::RectangleShape* background;
+	sf::Sprite* subBackground;
 };
 

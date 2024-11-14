@@ -11,8 +11,13 @@ Note::Note(TypeNote typeNote, float startTime, float endTime, int powerUp, Game*
 	this->startTime = 0;
 	this->endTime = 0;
 	this->canBeDestroy = false;
-	this->velocity = (END_NOTE_POSITION_Y - START_NOTE_POSITION_Y) / NOTE_DURATION;
 	this->game = game;
+	int sizeX = this->game->GetRenderWindow().getSize().x;
+	int sizeY = this->game->GetRenderWindow().getSize().y;
+
+	float targetY = sizeY - this->noteImage->getGlobalBounds().height;
+	this->velocity = targetY / NOTE_DURATION;
+
 	if (!this->SetTypeNote(typeNote) || !this->SetStartTime(startTime) || !this->SetEndTime(endTime))
 	{
 		std::cerr << "Error al crear la nota" << std::endl;
@@ -24,23 +29,23 @@ Note::Note(TypeNote typeNote, float startTime, float endTime, int powerUp, Game*
 	{
 	case TypeNote::GREEN:;
 		this->noteImage->setTexture(*game->GetResourceManager()->GetTextureNoteGreen());
-		this->positionInX = GREEN_POSITION_X;
+		this->positionInX = sizeX * GREEN_POSITION_X;
 		break;
 	case TypeNote::RED:
 		this->noteImage->setTexture(*game->GetResourceManager()->GetTextureNoteRed());
-		this->positionInX = RED_POSITION_X;
+		this->positionInX = sizeX * RED_POSITION_X;
 		break;
 	case TypeNote::YELLOW:
 		this->noteImage->setTexture(*game->GetResourceManager()->GetTextureNoteYellow());
-		this->positionInX = YELLOW_POSITION_X;
+		this->positionInX = sizeX * YELLOW_POSITION_X;
 		break;
 	case TypeNote::BLUE:
 		this->noteImage->setTexture(*game->GetResourceManager()->GetTextureNoteBlue());
-		this->positionInX = BLUE_POSITION_X;
+		this->positionInX = sizeX * BLUE_POSITION_X;
 		break;
 	case TypeNote::ORANGE:
 		this->noteImage->setTexture(*game->GetResourceManager()->GetTextureNoteOrange());
-		this->positionInX = ORANGE_POSITION_X;
+		this->positionInX = sizeX * ORANGE_POSITION_X;
 		break;
 	}
 
@@ -54,16 +59,9 @@ Note::Note(TypeNote typeNote, float startTime, float endTime, int powerUp, Game*
 		break;
 	}
 	
-	//float diferentTime = this->endTime - this->startTime;
-	//if (diferentTime > 0)
-	//{
-	//	sf::Vector2u textureSize = game->GetResourceManager()->GetTextureButtonGreen()->getSize();
-	//	sf::IntRect textureRect(0, 0, textureSize.x, 50 * diferentTime);
-	//	this->noteImage->setTextureRect(textureRect);
-	//}
 	this->noteImage->setRotation(0);
-	this->noteImage->setOrigin(50,50);
-	this->noteImage->setPosition(this->positionInX, START_NOTE_POSITION_Y);
+	this->noteImage->setOrigin(this->noteImage->getTexture()->getSize().x / 2, this->noteImage->getTexture()->getSize().y / 2);
+	this->noteImage->setPosition(this->positionInX, sizeY * START_NOTE_POSITION_Y);
 			
 }
 
@@ -128,7 +126,7 @@ void Note::Update(float deltaTime)
 		sf::Vector2f positon = this->noteImage->getPosition();
 		positon.y += this->velocity * deltaTime;
 		this->noteImage->setPosition(positon);
-		if (this->noteImage->getPosition().y > END_NOTE_POSITION_Y)
+		if (this->noteImage->getPosition().y >  this->game->GetRenderWindow().getSize().y * 1.0f)
 		{
 			this->canBeDestroy = true;
 			if (this->powerUp != 2)

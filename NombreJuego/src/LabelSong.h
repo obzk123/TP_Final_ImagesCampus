@@ -7,7 +7,7 @@ class LabelSong : public GameObject
 public:
 	LabelSong();
 	~LabelSong();
-	sf::RectangleShape* labelBackground;
+	sf::Sprite* labelBackground;
 	sf::Text* title;
 	sf::Text* subtitle;
 	sf::Text* duracion;

@@ -28,7 +28,12 @@ public:
 	sf::Texture* GetTextureButtonPressBlue()	{	return this->TextureButtonPressBlue;	}
 	sf::Texture* GetTextureButtonPressOrange()	{	return this->TextureButtonPressOrange;	}
 	sf::Texture* GetTextureDisc()				{	return this->TextureDisc;				}
-
+	sf::Texture* GetTextureSpinner()			{	return this->TextureSpinner;			}
+	sf::Texture* GetTextureLabelA()				{	return this->TextureLabelA;				}
+	sf::Texture* GetTextureLabelB()				{	return this->TextureLabelB;				}
+	sf::Texture* GetTextureLabelC()				{	return this->TextureLabelC;				}
+	sf::Texture* GetTextureBackground()			{	return this->TextureBackground;			}
+	sf::Texture* GetTextureBackground_2()		{	return this->TextureBackground_2;		}
 	sf::Texture* GetTextureRockMeter()			{	return this->TextureRockMeter;			}
 	sf::Texture* GetTextureTrack()				{	return this->TextureTrack;				}
 	sf::SoundBuffer* GetBufferBadNote1()		{	return this->BufferBadNote1;			}
@@ -37,19 +42,35 @@ public:
 	sf::SoundBuffer* GetBufferBadNote4()		{	return this->BufferBadNote4;			}
 	sf::SoundBuffer* GetBufferBadNote5()		{	return this->BufferBadNote5;			}
 
-	sf::Texture* GetTextureArrow() { return this->TextureArrow; }
-	sf::SoundBuffer* GetBufferMetronome() { return this->BufferMetronome; }
-	sf::SoundBuffer* GetBufferPublicHappy() { return this->BufferPublicHappy; }
-	sf::SoundBuffer* GetBufferPublicAngry() { return this->BufferPublicAngry;  }
-	sf::Texture* GetTexturePowerUpOne() { return this->TexturePowerUpOne; }
-	sf::Texture* GetTexturePowerUpTwo() { return this->TexturePowerUpTwo; }
-	sf::Font* GetFont() { return this->font;  }
+	sf::Texture* GetTextureArrow()				{	return this->TextureArrow;				}
+	sf::SoundBuffer* GetBufferMetronome()		{	return this->BufferMetronome;			}
+	sf::SoundBuffer* GetBufferPublicHappy()		{	return this->BufferPublicHappy;			}
+	sf::SoundBuffer* GetBufferPublicAngry()		{	return this->BufferPublicAngry;			}
+
+	sf::Texture* GetTexturePowerUpOne()			{	return this->TexturePowerUpOne;			}
+	sf::Texture* GetTexturePowerUpTwo()			{	return this->TexturePowerUpTwo;			}
+
+	sf::Texture* GetTextureKeyUp()				{ return this->TextureKeyUp;				}
+	sf::Texture* GetTextureKeyDown()			{ return this->TextureKeyDown;				}
+	sf::Texture* GetTextureKeyLeft()			{ return this->TextureKeyLeft;				}
+	sf::Texture* GetTextureKeyRight()			{ return this->TextureKeyRight;				}
+	sf::Texture* GetTextureKeyQ()				{ return this->TextureKeyQ;					}
+	sf::Texture* GetTextureKeyW()				{ return this->TextureKeyW;					}
+	sf::Texture* GetTextureKeyE()				{ return this->TextureKeyE;					}
+	sf::Texture* GetTextureKeyR()				{ return this->TextureKeyR;					}
+	sf::Texture* GetTextureKeyT()				{ return this->TextureKeyT;					}
+
+	sf::Texture* GetTextureGit()				{	return this->TextureGit;				}
+	sf::Texture* GetTextureLinkedin()			{	return this->TextureLinkedin;			}
+
+	sf::Texture* GetTextureFretboard()			{	return this->TextureFretboard;			}
+
+	sf::Font* GetFont()							{	return this->font;						}
 
 	void InitLoad();
 	void LoadFont();
 	bool LoadAllPartialSong(std::vector<Song*>& songs);
 	Song* LoadPartialSong(std::string path, Game* game);
-
 
 private:
 
@@ -75,6 +96,25 @@ private:
 	sf::Texture* TextureRockMeter;
 	sf::Texture* TextureTrack;
 	sf::Texture* TextureDisc;
+	sf::Texture* TextureSpinner;
+	sf::Texture* TextureLabelA;
+	sf::Texture* TextureLabelB;
+	sf::Texture* TextureLabelC;
+	sf::Texture* TextureBackground;
+	sf::Texture* TextureBackground_2;
+	sf::Texture* TextureGit;
+	sf::Texture* TextureLinkedin;
+	sf::Texture* TextureFretboard;
+	sf::Texture* TextureKeyUp;
+	sf::Texture* TextureKeyDown;
+	sf::Texture* TextureKeyLeft;
+	sf::Texture* TextureKeyRight;
+	sf::Texture* TextureKeyQ;
+	sf::Texture* TextureKeyW;
+	sf::Texture* TextureKeyE;
+	sf::Texture* TextureKeyR;
+	sf::Texture* TextureKeyT;
+
 	sf::SoundBuffer* BufferMetronome;
 	sf::SoundBuffer* BufferPublicHappy;
 	sf::SoundBuffer* BufferPublicAngry;

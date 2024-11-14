@@ -9,6 +9,7 @@ class PauseMenu;
 class LoadingScreen;
 class LossScreen;
 class WinScreen;
+class CaptureNote;
 
 enum class GameState 
 {
@@ -20,7 +21,7 @@ enum class GameState
 class GameScreen : public Screens
 {
 public:
-	GameScreen(Game* gameInstance);
+	GameScreen(Game* gameInstance, int volumeFx);
 	~GameScreen();
 	TypeScreen SelectOption() override;
 	TypeScreen ProcessInput(sf::Event event);
@@ -37,6 +38,9 @@ public:
 	void UnPause();
 	void Restart();
 
+	sf::Sound* GetPublicHappySound() { return this->publicHappySound; }
+	sf::Sound* GetPublicAngrySound() { return this->publicAngrySound; }
+	float GetTime() { return this->time; }
 	void BackCount();
 	bool CheckLoss();
 	void DeathThread();
@@ -44,7 +48,9 @@ public:
 	std::atomic<bool> isLoading;
 	std::thread backCountThread;
 	std::atomic<bool> finishThread;
-
+	bool GetCaptureMode()			{ return this->captureMode; }
+	std::vector<CaptureNote*> capturesNotes;
+	void SaveCaptureMode();
 private:
 	
 	float startTime;
@@ -54,6 +60,9 @@ private:
 	bool startGame;
 	bool loss;
 	bool win;
+	int sizeX;
+	int sizeY;
+	int volumeFx;
 	
 
 	GameState gameState;
@@ -65,14 +74,14 @@ private:
 	sf::View defaultView;
 	sf::View shakeView;
 
-	sf::RectangleShape* background;
+	sf::Sprite* background;
+	sf::Sprite* background_2;
 	sf::RectangleShape* track;
 	sf::RectangleShape* track_2;
 	sf::RectangleShape* leftLine;
 	sf::RectangleShape* rigthLine;
-	sf::RectangleShape* buttonLine;
-
-	std::vector<sf::RectangleShape*> trastes;
+	std::vector<sf::RectangleShape*> lines;
+	sf::RectangleShape* albumImage;
 	sf::Sprite* disc;
 	sf::CircleShape* circleTime;
 	sf::RectangleShape* lineTime;
@@ -84,9 +93,14 @@ private:
 	sf::Sound* publicHappySound;
 	sf::Sound* publicAngrySound;
 	std::vector<sf::Sound*> soundBadNotes;
+	sf::Sprite* KeyQ;
+	sf::Sprite* KeyW;
+	sf::Sprite* KeyE;
+	sf::Sprite* KeyR;
+	sf::Sprite* KeyT;
+	sf::Text* explain;
+	bool captureMode = false;
 	Player* player;
 	CameraShake* cameraShake;
-	
-
 };
 

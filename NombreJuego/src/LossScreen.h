@@ -11,9 +11,9 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 	void Update(float deltaTime) override;
 
-	
 private:
 	TypeScreen SelectOption() override;
 	sf::Text* title;
+	sf::Sprite* subBackground;
 };
 

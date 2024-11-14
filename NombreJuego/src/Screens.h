@@ -22,5 +22,10 @@ protected:
 	int selectedOption;
 	Game* gameInstance;
 	sf::Font* font;
+	std::vector<sf::Sprite*> labels;
+	sf::SoundBuffer* BufferMenuUp;
+	sf::SoundBuffer* BufferMenuDown;
+	sf::Sound* SoundMenuUp;
+	sf::Sound* SoundMenuDown;
 };
 
